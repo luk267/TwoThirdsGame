@@ -1,0 +1,31 @@
+body {
+    background-color: #f8f9fa;
+  }
+  
+  .card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+  
+  .card-header {
+    background-color: #f1f1f1;
+    font-weight: bold;
+  }
+  
+  .list-group-item {
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .list-group-item:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .list-group-item.active {
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+  
+  small {
+    word-break: break-all;
+  }
