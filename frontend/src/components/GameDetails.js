@@ -112,9 +112,18 @@ function GameDetails({ gameAddress, account, provider, signer, gameAbi }) {
     const timer = setInterval(() => {
       if (gameInfo.registrationDeadline && gameInfo.submissionDeadline) {
         const now = Math.floor(Date.now() / 1000);
-        const regTimeLeft = Math.max(0, gameInfo.registrationDeadline - now);
-        const subTimeLeft = Math.max(0, gameInfo.submissionDeadline - now);
-        
+        // Convert BigInt to Number before arithmetic operations
+        const regDeadline = typeof gameInfo.registrationDeadline === 'bigint' 
+          ? Number(gameInfo.registrationDeadline) 
+          : gameInfo.registrationDeadline;
+          
+        const subDeadline = typeof gameInfo.submissionDeadline === 'bigint' 
+          ? Number(gameInfo.submissionDeadline) 
+          : gameInfo.submissionDeadline;
+
+        const regTimeLeft = Math.max(0, regDeadline - now);
+        const subTimeLeft = Math.max(0, subDeadline - now);
+
         setTimeLeft({
           registration: regTimeLeft,
           submission: subTimeLeft

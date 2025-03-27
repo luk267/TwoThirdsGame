@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import GameFactory from './artifacts/contracts/GameFactory.sol/GameFactory.json';
 import TwoThirdsGame from './artifacts/contracts/TwoThirdsGame.sol/TwoThirdsGame.json';
-import CreateGame from './components/CreateGame';
-import GameList from './components/GameList';
-import GameDetails from './components/GameDetails';
+import CreateGame from './components/CreateGame.js';
+import GameList from './components/GameList.js';
+import GameDetails from './components/GameDetails.js';
 import './App.css';
 
 function App() {
