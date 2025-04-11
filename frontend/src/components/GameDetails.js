@@ -32,6 +32,10 @@ function GameDetails({ gameAddress, account, provider, signer, gameAbi }) {
   useEffect(() => {
     const loadGameDetails = async () => {
       try {
+        // Reset states when loading new game or account
+        setLoading(true);
+        setError(null);
+        
         // Create game contract instance
         const gameContract = new ethers.Contract(
           gameAddress,
@@ -54,6 +58,7 @@ function GameDetails({ gameAddress, account, provider, signer, gameAbi }) {
         // Check if the current user has registered
         const playerId = await gameContract.playerIds(account);
         const hasRegistered = playerId > 0;
+        console.log(`Account ${account} has playerId: ${playerId}, registered: ${hasRegistered}`);
         
         // Check if the user has submitted a number
         const hasSubmitted = hasRegistered ? 
@@ -102,7 +107,7 @@ function GameDetails({ gameAddress, account, provider, signer, gameAbi }) {
       }
     };
     
-    if (gameAddress && signer) {
+    if (gameAddress && signer && account) {
       loadGameDetails();
     }
   }, [gameAddress, account, signer, gameAbi]);
@@ -240,7 +245,7 @@ function GameDetails({ gameAddress, account, provider, signer, gameAbi }) {
     }
   };
   
-  const handleAdvancePhase = async () => {
+  const handleAdvanceToSubmission = async () => {
     try {
       setLoading(true);
       
@@ -250,8 +255,24 @@ function GameDetails({ gameAddress, account, provider, signer, gameAbi }) {
       // Refresh game info
       window.location.reload();
     } catch (err) {
-      console.error("Error advancing phase:", err);
-      setError("Failed to advance the game phase");
+      console.error("Error advancing to submission phase:", err);
+      setError("Failed to advance to submission phase");
+      setLoading(false);
+    }
+  };
+  
+  const handleAdvanceToReveal = async () => {
+    try {
+      setLoading(true);
+      
+      const tx = await game.advanceToReveal();
+      await tx.wait();
+      
+      // Refresh game info
+      window.location.reload();
+    } catch (err) {
+      console.error("Error advancing to reveal phase:", err);
+      setError("Failed to advance to reveal phase");
       setLoading(false);
     }
   };
@@ -418,7 +439,8 @@ function GameDetails({ gameAddress, account, provider, signer, gameAbi }) {
                 </div>
               )}
               
-              {((gameInfo.phase === "Submission" && timeLeft.submission === 0) || gameInfo.phase === "Reveal") && 
+              {(gameInfo.phase === "Reveal" || 
+               (gameInfo.phase === "Submission" && timeLeft.submission === 0)) && 
                gameInfo.hasRegistered && gameInfo.hasSubmitted && (
                 <button 
                   className="btn btn-primary w-100"
@@ -436,9 +458,18 @@ function GameDetails({ gameAddress, account, provider, signer, gameAbi }) {
                   {gameInfo.phase === "Registration" && gameInfo.playerCount >= gameInfo.minPlayers && (
                     <button 
                       className="btn btn-warning w-100 mb-2"
-                      onClick={handleAdvancePhase}
+                      onClick={handleAdvanceToSubmission}
                     >
                       Advance to Submission Phase
+                    </button>
+                  )}
+                  
+                  {gameInfo.phase === "Submission" && (
+                    <button 
+                      className="btn btn-warning w-100 mb-2"
+                      onClick={handleAdvanceToReveal}
+                    >
+                      Advance to Reveal Phase
                     </button>
                   )}
                   

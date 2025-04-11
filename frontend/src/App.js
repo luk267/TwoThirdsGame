@@ -25,6 +25,11 @@ function App() {
       try {
         // Check if MetaMask is installed
         if (window.ethereum) {
+          // First get the current accounts to ensure we have the latest
+          const accounts = await window.ethereum.request({ 
+            method: 'eth_requestAccounts' 
+          });
+          
           // Connect to MetaMask
           const provider = new ethers.BrowserProvider(window.ethereum);
           const signer = await provider.getSigner();
@@ -85,9 +90,23 @@ function App() {
       setSigner(signer);
       setAccount(account);
       
+      // Recreate factory contract with new signer
+      const factory = new ethers.Contract(
+        factoryAddress,
+        GameFactory.abi,
+        signer
+      );
+      setFactoryContract(factory);
+      
       // Refresh game list
-      if (factoryContract) {
-        await fetchGameList(factoryContract);
+      await fetchGameList(factory);
+      
+      // Reset selected game to force reload game details with new account
+      if (selectedGame) {
+        const currentGame = selectedGame;
+        setSelectedGame(null);
+        // Small delay to ensure state updates before reselecting
+        setTimeout(() => setSelectedGame(currentGame), 100);
       }
     }
   };

@@ -142,6 +142,26 @@ contract TwoThirdsGame is ReentrancyGuard {
     }
     
     /**
+     * @dev Force move to the reveal phase before deadline
+     */
+    function advanceToReveal() external {
+        require(currentPhase == GamePhase.Submission, "Not in submission phase");
+        require(msg.sender == gameAdmin, "Only admin can advance phases");
+        
+        // Make sure at least one player has submitted a number
+        bool anySubmissions = false;
+        for (uint256 i = 1; i <= _playerIdCounter; i++) {
+            if (players[i].hasSubmitted) {
+                anySubmissions = true;
+                break;
+            }
+        }
+        require(anySubmissions, "No number submissions yet");
+        
+        currentPhase = GamePhase.Reveal;
+    }
+    
+    /**
      * @dev Allow players to submit a number commitment (hash)
      * We use commit-reveal to prevent players from seeing each other's numbers
      * @param commitment Hash of the player's number and a secret

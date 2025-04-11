@@ -40,8 +40,8 @@
       ]
     },
     "/Users/lukasharbeck/TwoThirdsGame/contracts/TwoThirdsGame.sol": {
-      "lastModificationDate": 1742920275409,
-      "contentHash": "c79663ec5950d944454c695119c20d7c",
+      "lastModificationDate": 1744376547605,
+      "contentHash": "309adcfc477c98b4b2555a9271f721a2",
       "sourceName": "contracts/TwoThirdsGame.sol",
       "solcConfig": {
         "version": "0.8.20",
